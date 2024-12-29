@@ -38,6 +38,7 @@ export async function POST(request: Request): Promise<Response> {
         if (body.key !== api_key) {
             return NextResponse.json({ message: "Invalid key" }, { status: 401 });
         }
+        status = "running";
         const clip_id = await scrapClips();
 
         if (!clip_id) {

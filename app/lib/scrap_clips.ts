@@ -33,7 +33,6 @@ const clipDescriptions: string[] = [
 
 
 // URL de la page à scraper
-const url = "https://twitchtracker.com/clips";
 
 let browser: Browser | null = null;
 let page: Page | null = null;
@@ -128,6 +127,7 @@ export async function scrapClips() : Promise<string | void> {
                 await new Promise((resolve) => setTimeout(resolve, 5000));
                 i++;
             } catch (error) {
+              console.error(error);
             }
         }
         
@@ -162,7 +162,7 @@ async function saveIds(ids: string[]) {
         const data = await fs.promises.readFile(filePath, 'utf-8');
         existingIds = JSON.parse(data);
       } catch (error) {
-        console.log('Fichier non trouvé, création d\'un nouveau.');
+        console.error('Fichier non trouvé, création d\'un nouveau.', error);
       }
   
       // Identifier les IDs déjà présents
