@@ -7,7 +7,12 @@ let status = "stopped";
 
 
 
-export async function GET() {
+export async function GET(request: Request): Promise<Response> {
+    const body = await request.json();
+
+    if (body.key !== process.env.API_KEY) {
+        return NextResponse.json({ message: "Invalid key" }, { status: 401 });
+    }
 
     const response = NextResponse.json({
         status: status
@@ -16,33 +21,35 @@ export async function GET() {
     return response
 }
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<Response> {
     try {
         const body = await request.json();
-        
+
+        // Validation de la clé transmise
         if (!body.key) {
-            throw "no key"
+            return NextResponse.json({ message: "Key is required" }, { status: 400 });
         }
 
-        const api_key : string = process.env.KEY_API ? process.env.KEY_API: ""
-        if (body.key == null) {
-            body.key == ""
-            
-        }
-        if (!body.key != api_key) {
-            const response = NextResponse.json({
-                status: status
-            })
-    
+        // Vérification de la clé API dans les variables d'environnement
+        const api_key: string | undefined = process.env.API_KEY;
+        if (!api_key) {
+            console.error("Server misconfiguration: API_KEY is missing");
+            return NextResponse.json({ message: "Server misconfiguration: API_KEY is missing" }, { status: 500 });
         }
 
-        const response = NextResponse.json({
-            status: status
-        })
+        if (body.key !== api_key) {
+            return NextResponse.json({ message: "Invalid key" }, { status: 401 });
+        }
 
-
+        // Réponse réussie
+        return NextResponse.json({ message: "Cron job started" }, { status: 200 });
+        
     } catch (error) {
-        console.log(error)
+        console.error("Error in API endpoint:", error);
+        return NextResponse.json(
+            { message: "Internal server error", error: error instanceof Error ? error.message : String(error) },
+            { status: 500 }
+        );
     }
 }
 
