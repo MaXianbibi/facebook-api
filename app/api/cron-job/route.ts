@@ -6,19 +6,18 @@ import { NextResponse } from "next/server";
 let status = "stopped";
 
 
-
 export async function GET(request: Request): Promise<Response> {
-    const body = await request.json();
+    // Récupération des paramètres de requête
+    const { searchParams } = new URL(request.url);
+    const key = searchParams.get("key");
 
-    if (body.key !== process.env.API_KEY) {
+    // Vérification de la clé API
+    if (key !== process.env.API_KEY) {
         return NextResponse.json({ message: "Invalid key" }, { status: 401 });
     }
 
-    const response = NextResponse.json({
-        status: status
-    })
-
-    return response
+    // Réponse avec le statut
+    return NextResponse.json({ status: "OK" });
 }
 
 export async function POST(request: Request): Promise<Response> {
@@ -43,7 +42,7 @@ export async function POST(request: Request): Promise<Response> {
 
         // Réponse réussie
         return NextResponse.json({ message: "Cron job started" }, { status: 200 });
-        
+
     } catch (error) {
         console.error("Error in API endpoint:", error);
         return NextResponse.json(
