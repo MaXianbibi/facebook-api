@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PostPhotoWithMessageFB } from '@/app/lib/lib_fb'
+import { PostPhotoWithMessageFB, PostVideo } from '@/app/lib/lib_fb'
 
 export async function GET() {
 
@@ -13,20 +13,38 @@ export async function GET() {
 
 export async function POST(request: Request) {
     try {
-        const body =  await request.json();
+        const body = await request.json();
 
-        if (!body.photo_url || !body.message) {
+        // Vérifier que les paramètres nécessaires sont présents
+        if ((!body.photo_url && !body.video_url) || !body.message) {
             return NextResponse.json(
                 {
-                    message: 'Les paramètres photo_url et message sont obligatoires',
+                    message: 'Les paramètres photo_url ou video_url et message sont obligatoires',
                 },
                 { status: 400 } // Retourne un statut 400 en cas d'erreur
             );
         }
-        await PostPhotoWithMessageFB(body.photo_url ,body.message);
-        return NextResponse.json({
-            message: 'POST EN COURS SUR LA PAGE FB'
-        });
+
+        // Publier une photo ou une vidéo selon les paramètres fournis
+        if (body.photo_url) {
+            await PostPhotoWithMessageFB(body.photo_url, body.message);
+            return NextResponse.json({
+                message: 'Publication d\'une photo en cours sur la page Facebook',
+            });
+        } else if (body.video_url) {
+            await PostVideo(body.video_url, body.message);
+            return NextResponse.json({
+                message: 'Publication d\'une vidéo en cours sur la page Facebook',
+            });
+        }
+
+        // Si ni photo ni vidéo n'est fournie (cas improbable ici)
+        return NextResponse.json(
+            {
+                message: 'Aucun contenu valide à publier',
+            },
+            { status: 400 }
+        );
     } catch (error) {
         console.error('Erreur lors du traitement de la requête POST :', error);
 
@@ -39,3 +57,4 @@ export async function POST(request: Request) {
         );
     }
 }
+
