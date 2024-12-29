@@ -1,39 +1,31 @@
 "use server"
 
-import cron from "node-cron";
 import { scrapClips } from "@/app/lib/scrap_clips";
+import { NextResponse } from "next/server";
 
 let status = "stopped";
 
-// cron.schedule("0 */3 * * *", async () => {
-//     console.log("Tâche planifiée : Scraping démarré");
-//     try {
-//       await scrapClips();
-//     } catch (error) {
-//       console.error("Erreur lors du scraping :", error);
-//     }
-//   });
-
-
-cron.schedule("*/5 * * * *", async () => {
-    console.log("Tâche planifiée : Scraping démarré");
-    try {
-        status = "running";
-        await scrapClips();
-        console.log("Tâche terminée avec succès.");
-    } catch (error) {
-        console.error("Erreur lors du scraping :", error);
-    }
-    status = "stopped";
-});
 
 
 export async function GET() {
-    return {
-        status: 200,
-        body: {
-            message: "cron-job",
-            status: status,
-        },
-    };
+
+    const response = NextResponse.json({
+        status: status
+    })
+
+    return response
 }
+
+export async function POST(request: Request) {
+    try {
+        const body = await request.json();
+        
+        if (!body.key) {
+            throw "no key"
+        }
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
+
