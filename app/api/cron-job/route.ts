@@ -15,9 +15,8 @@ export async function GET(request: Request): Promise<Response> {
     if (key !== process.env.API_KEY) {
         return NextResponse.json({ message: "Invalid key" }, { status: 401 });
     }
-
     // Réponse avec le statut
-    return NextResponse.json({ status: "OK" });
+    return NextResponse.json({ status: status });
 }
 
 export async function POST(request: Request): Promise<Response> {
@@ -39,9 +38,18 @@ export async function POST(request: Request): Promise<Response> {
         if (body.key !== api_key) {
             return NextResponse.json({ message: "Invalid key" }, { status: 401 });
         }
+        const clip_id = await scrapClips();
+
+        if (!clip_id) {
+            return NextResponse.json({ message: "Error while scrapping" }, { status: 500 });
+        }
 
         // Réponse réussie
-        return NextResponse.json({ message: "Cron job started" }, { status: 200 });
+        const message = "Posted : " + clip_id;
+        return NextResponse.json({ message: message,
+            clip_id: clip_id,
+            date: new Date().toISOString()
+         }, { status: 200 });
 
     } catch (error) {
         console.error("Error in API endpoint:", error);

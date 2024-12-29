@@ -69,7 +69,7 @@ async function get_id_clips(clips: ElementHandle<Element>[], index: number = 0) 
       );
 }
 
-export async function scrapClips() {
+export async function scrapClips() : Promise<string | void> {
     try {
         await init_scrapping();
 
@@ -144,7 +144,7 @@ export async function scrapClips() {
             console.log('Fichier supprimé avec succès.');
         });
 
-        return ;
+        return clip;
     }
     catch (error) {
         console.error('Erreur lors de l\'initialisation du scraping :', error);
