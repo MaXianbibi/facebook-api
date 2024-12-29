@@ -23,7 +23,24 @@ export async function POST(request: Request) {
         if (!body.key) {
             throw "no key"
         }
-        
+
+        const api_key : string = process.env.KEY_API ? process.env.KEY_API: ""
+        if (body.key == null) {
+            body.key == ""
+            
+        }
+        if (!body.key != api_key) {
+            const response = NextResponse.json({
+                status: status
+            })
+    
+        }
+
+        const response = NextResponse.json({
+            status: status
+        })
+
+
     } catch (error) {
         console.log(error)
     }
