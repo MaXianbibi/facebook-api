@@ -12,7 +12,7 @@ export async function GET(request: Request): Promise<Response> {
     const key = searchParams.get("key");
 
     // Vérification de la clé API
-    if (key !== process.env.API_KEY) {
+    if (key !== process.env.KEY_API) {
         return NextResponse.json({ message: "Invalid key" }, { status: 401 });
     }
     // Réponse avec le statut
@@ -29,7 +29,7 @@ export async function POST(request: Request): Promise<Response> {
         }
 
         // Vérification de la clé API dans les variables d'environnement
-        const api_key: string | undefined = process.env.API_KEY;
+        const api_key: string | undefined = process.env.KEY_API;
         if (!api_key) {
             console.error("Server misconfiguration: API_KEY is missing");
             return NextResponse.json({ message: "Server misconfiguration: API_KEY is missing" }, { status: 500 });

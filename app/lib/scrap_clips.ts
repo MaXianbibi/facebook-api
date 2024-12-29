@@ -134,9 +134,9 @@ export async function scrapClips() : Promise<string | void> {
         const description = clipDescriptions[Math.floor(Math.random() * clipDescriptions.length)] + "\n What y'all think about this ? 🤔 \n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n.\n";
         const tags = "#Twitch, #TwitchClips, #Gaming, #LiveStreaming, #Streamer, #GamingHighlights, #EpicMoments, #FunnyMoments, #GamePlay, #BestPlays, #ProGamer, #ClutchMoments, #Esports, #Fails, #StreamerLife, #Gamers, #TwitchFails, #TwitchMoments, #TwitchCommunity, #TwitchHighlights";
 
-        await PostVideo(`${clipsDir}\\${files[0]}`, description + tags);
+        await PostVideo(`${clipsDir}/${files[0]}`, description + tags);
         browser.close();
-        fs.unlink(`${clipsDir}\\${files[0]}`, (err) => {
+        fs.unlink(`${clipsDir}/${files[0]}`, (err) => {
             if (err) {
                 console.error('Erreur lors de la suppression du fichier :', err);
                 return;
@@ -188,7 +188,7 @@ async function saveIds(ids: string[]) {
   }
 
 async function dl_clip(clips_name : string) {
-    const script = spawn('py', ['./dl_clips.py', clips_name]); // Spécifiez 'python3' ou 'python' selon votre configuration
+    const script = spawn('python3', ['./dl_clips.py', clips_name]); // Spécifiez 'python3' ou 'python' selon votre configuration
 
     script.on('close', (code) => {
         if (code === 0) {
