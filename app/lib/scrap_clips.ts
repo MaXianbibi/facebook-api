@@ -38,23 +38,27 @@ let browser: Browser | null = null;
 let page: Page | null = null;
 
 async function init_scrapping() {
-    browser = await puppeteer.launch({
-        headless: false,
+  browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+      ]
     });
 
-    if (!browser) {
-        console.log("Échec du lancement du navigateur");
-        throw new Error("Échec du lancement du navigateur");
-    }
+  if (!browser) {
+      console.log("Échec du lancement du navigateur");
+      throw new Error("Échec du lancement du navigateur");
+  }
 
-    page = await browser.newPage();
-    await page.setExtraHTTPHeaders({ "Accept-Language": "en-US,en;q=0.9" });
-    await page.setViewport({ width: 1080, height: 1024 });
+  page = await browser.newPage();
+  await page.setExtraHTTPHeaders({ "Accept-Language": "en-US,en;q=0.9" });
+  await page.setViewport({ width: 1080, height: 1024 });
 
-    await page.setUserAgent(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+  await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     );
-
 }
 
 async function get_id_clips(clips: ElementHandle<Element>[], index: number = 0) {
